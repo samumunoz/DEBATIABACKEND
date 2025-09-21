@@ -14,6 +14,8 @@ console.log("SESSION_SECRET:", process.env.SESSION_SECRET);
 
 const app = express();
 
+
+
 // Configuración de CORS (acepta todo para pruebas)
 app.use(
   cors({
@@ -32,9 +34,12 @@ app.use(
 // Configuración de sesión en cookies
 app.use(
   cookieSession({
-    name: "session",
-    keys: [process.env.SESSION_SECRET],
-    maxAge: 24 * 60 * 60 * 1000, // 1 día
+    name: "session",                     
+    keys: [process.env.SESSION_SECRET],  // clave para firmar la cookie
+    httpOnly: true,                      // no accesible desde JS en el front
+    secure: true,                        // obligatorio en HTTPS (Railway lo es)
+    sameSite: "none",                    // necesario para dominios distintos
+    maxAge: 24 * 60 * 60 * 1000, 
   })
 );
 
