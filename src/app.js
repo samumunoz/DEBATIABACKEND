@@ -73,7 +73,7 @@ app.get("/auth/google/callback", async (req, res) => {
       picture: payload.picture,
     };
 
-    res.redirect("/profile");
+    res.redirect("/profile ");
   } catch (err) {
     console.error("Error en login:", err);
     res.status(500).send("Error al autenticar con Google" + err.message);
