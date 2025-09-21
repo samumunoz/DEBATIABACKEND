@@ -69,7 +69,6 @@ app.get("/auth/google/callback", async (req, res) => {
     const { tokens } = await client.getToken(code);
     client.setCredentials(tokens);
 
-    // Obtener info del usuario
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -77,17 +76,14 @@ app.get("/auth/google/callback", async (req, res) => {
 
     const payload = ticket.getPayload();
 
-    // Guardar en sesión
-    req.session.user = {
-      email: payload.email,
-      name: payload.name,
-      picture: payload.picture,
-    };
+    // Aquí podrías generar un JWT tuyo si quieres
+    const userToken = tokens.id_token;
 
-    res.redirect("http://localhost:3000/profile");
+    // Rediriges al front con el token en la URL
+    res.redirect(`http://localhost:3000/profile?token=${userToken}`);
   } catch (err) {
     console.error("Error en login:", err);
-    res.status(500).send("Error al autenticar con Google" + err.message);
+    res.status(500).send("Error al autenticar con Google: " + err.message);
   }
 });
 
