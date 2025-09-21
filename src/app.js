@@ -6,6 +6,12 @@ const cookieSession = require("cookie-session");
 
 dotenv.config();
 
+// LOG de variables de entorno para depuración
+console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET:", process.env.GOOGLE_CLIENT_SECRET);
+console.log("GOOGLE_REDIRECT_URI:", process.env.GOOGLE_REDIRECT_URI);
+console.log("SESSION_SECRET:", process.env.SESSION_SECRET);
+
 const app = express();
 
 // Configuración de CORS (acepta todo para pruebas)
