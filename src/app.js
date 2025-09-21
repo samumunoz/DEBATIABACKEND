@@ -88,11 +88,32 @@ app.get("/auth/google/callback", async (req, res) => {
 });
 
 // ENDPOINT: Perfil del usuario logueado
-app.get("/profile", (req, res) => {
-  if (!req.session?.user) {
-    return res.status(401).json({ error: "No autenticado" }); // ❌ ya no redirige, devuelve 401
+app.get("/profile", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: "No autenticado" });
+    }
+
+    const token = authHeader.split(" ")[1]; // Bearer <token>
+
+    // Verificar el token de Google
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    res.json({
+      email: payload.email,
+      name: payload.name,
+      picture: payload.picture,
+    });
+  } catch (err) {
+    console.error("Error verificando token:", err);
+    res.status(401).json({ error: "Token inválido o expirado" });
   }
-  res.json(req.session.user);
 });
 
 // ENDPOINT: Logout
