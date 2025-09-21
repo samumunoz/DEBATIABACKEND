@@ -37,7 +37,7 @@ app.use(
     name: "session",                     
     keys: [process.env.SESSION_SECRET],  // clave para firmar la cookie
     httpOnly: true,                      // no accesible desde JS en el front
-    secure: true,                        // obligatorio en HTTPS (Railway lo es)
+    secure: false,                        // obligatorio en HTTPS (Railway lo es)
     sameSite: "none",                    // necesario para dominios distintos
     maxAge: 24 * 60 * 60 * 1000, 
   })
@@ -93,12 +93,10 @@ app.get("/auth/google/callback", async (req, res) => {
 
 // ENDPOINT: Perfil del usuario logueado
 app.get("/profile", (req, res) => {
-  if (!req.session.user) {
-    return res.redirect("/auth/google");
+  if (!req.session?.user) {
+    return res.status(401).json({ error: "No autenticado" }); // ❌ ya no redirige, devuelve 401
   }
-
-  const userData = req.session.user;
-  res.json(userData);
+  res.json(req.session.user);
 });
 
 // ENDPOINT: Logout
